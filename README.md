@@ -57,9 +57,9 @@ If a date or time isn't clear, note that. If something is ambiguous, include you
 ```
 
 **What I'm measuring:**
-- Can it read handwriting accurately?
-- Does it handle multiple kids' events without mixing them up?
-- How does it handle partial dates or unclear writing?
+- Can it read handwriting accurately? - **Yes, reliably. Got all 8–9 handwritten entries correctly.**
+- Does it handle multiple kids' events without mixing them up? - **Yes, kept Kid1 and Kid2 musical together, Kid1 field trip separate, friends birthday separate.**
+- How does it handle partial dates or unclear writing? - **Flagged "SB" (short-hand for Spring Break) correctly rather than guessing. April 17 had three items in one cell and extracted all three.**
 
 **Status:** [ ] Not started | [ ] In progress | [x] Done  
 **Notes:** *(add observations here as you test)*
@@ -74,6 +74,10 @@ If a date or time isn't clear, note that. If something is ambiguous, include you
 - Testing with different calendar layouts or lighting conditions
 
 **Prompt iterations will be tracked in `/prompts/`**
+- Add instruction to flag abbreviations and to not always include them as-is
+- Add instruction to split multi-event cells into separate rows
+- Add insturction to ask questions, confirm start and end times, not to guess, etc
+- Possibly ask for output as JSON for the Shortcut phase
 
 ---
 
@@ -127,13 +131,3 @@ Likely stack if built: Single-file HTML + Claude API + Google Calendar OAuth. Sa
 *Tracked in `/prompts/` as they evolve.*
 
 ---
-
-## Links
-
-- **My GitHub:** [github.com/TeeFrye](https://github.com/TeeFrye)
-- **Related project:** [Hoops Index Drill Library](https://teefrye.github.io/hoops-index-drill-library) — youth basketball drill generator with Claude API
-- **Built with:** [Claude.ai](https://claude.ai) by Anthropic
-
----
-
-*Started: March 2026 · Status: Experimenting*
