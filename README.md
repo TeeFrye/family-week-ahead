@@ -62,7 +62,11 @@ If a date or time isn't clear, note that. If something is ambiguous, include you
 - How does it handle partial dates or unclear writing? - **Flagged "SB" (short-hand for Spring Break) correctly rather than guessing. April 17 had three items in one cell and extracted all three.**
 
 **Status:** [ ] Not started | [ ] In progress | [x] Done  
-**Notes:** *(add observations here as you test)*
+**Notes:** *(observations/thoughts that surfaced)*
+- Add instruction to flag abbreviations and to not always include them as-is
+- Add instruction to split multi-event cells into separate rows
+- Add insturction to ask questions, confirm start and end times, not to guess, etc
+- Possibly ask for output as JSON for the Shortcut phase
 
 ---
 
@@ -74,10 +78,6 @@ If a date or time isn't clear, note that. If something is ambiguous, include you
 - Testing with different calendar layouts or lighting conditions
 
 **Prompt iterations will be tracked in `/prompts/`**
-- Add instruction to flag abbreviations and to not always include them as-is
-- Add instruction to split multi-event cells into separate rows
-- Add insturction to ask questions, confirm start and end times, not to guess, etc
-- Possibly ask for output as JSON for the Shortcut phase
 
 ---
 
