@@ -20,7 +20,7 @@ Before writing a line of code, I mapped out the full solution space:
 |---|---|---|---|
 | **Just use Claude.ai** | Upload photo → extract events → add to calendar manually | None | Manual each time, but works today |
 | **iOS Shortcut** | One-tap automation on my phone that calls Claude API + Google Calendar | Low–Medium | No code, lives on my phone, feels like a real tool |
-| **Web App (GitHub Pages)** | Full UI with photo upload, event review, Google Calendar push via OAuth | High | Most portfolio signal, but overkill for the actual problem |
+| **Web App (GitHub Pages)** | Full UI with photo upload, event review, Google Calendar push via OAuth | High | Overkill for the actual problem |
 | **Custom Claude Integration** | A prompt + Google Calendar MCP already connected in Claude.ai | None | Already possible without building anything |
 
 **Decision:** Start with the simplest thing that works. Graduate to more complexity only if the friction justifies it.
