@@ -12,9 +12,13 @@ Sends any screenshot, photo, or PDF to the **Family Inbox** Drive folder in one 
    - A block appears at the top: *Receive **Any** input from **Share Sheet***.
    - Tap **Any** → deselect everything except **Images** and **PDFs** → tap **Done**.
    - *If there's no input* → set it to **Get Clipboard**. Then, if you copied a screenshot, running the shortcut from the widget still works.
-4. Tap **Search for apps and actions** → search **Drive** → choose the Google Drive action named **Save File** or **Upload**.
-   - If no Google Drive action appears, use **Save File** (from Files) instead. Set the location to **Google Drive › Family Inbox** in the Files picker, and turn off **Ask Where to Save**.
-5. Set the action's input to **Shortcut Input** and the destination folder to **Family Inbox**.
+4. Google Drive doesn't offer its own Shortcuts action. It saves through the **Files** app instead. Turn that on once:
+   - Open the **Files** app → **Browse** → **•••** (top right) → **Edit** → turn on **Google Drive** → **Done**.
+   - Tap **Google Drive** in Files to confirm you can see the `Family Inbox` folder.
+5. Back in the shortcut: **Search for apps and actions** → **Save File** (the Files action).
+   - Tap the arrow (›) on the action → turn off **Ask Where to Save**.
+   - Tap the folder field → **Browse** → **Google Drive** → **Family Inbox** → **Open**.
+   - Make sure the action is saving **Shortcut Input**.
 6. *(Optional)* Add **Show Notification** → text `Sent to Family Inbox ✅`.
 7. Tap **Done**.
 
@@ -33,4 +37,4 @@ Long-press the message → **Copy** → paste it into a new email to your `+fami
 |---|---|
 | Not in the share sheet | The ⓘ setting "Show in Share Sheet" is off, or the input types don't include Images. |
 | Saves to the wrong place | Turn off "Ask Where to Save" and pick the folder again. |
-| Drive action missing | Open the Drive app once, then search actions again, or use the Files fallback in step 4. |
+| Google Drive not listed in Files | Open the Google Drive app once and sign in, then go back to Files → ••• → Edit. |

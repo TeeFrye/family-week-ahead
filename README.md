@@ -64,6 +64,7 @@ ClassDojo and GroupMe have no usable integration path. Instead of fighting that,
 | **Images → Drive, text → Gmail** | Tested: the Gmail connector can't read attachments; Drive OCRs screenshots cleanly. |
 | **Photo is optional** | The briefing runs every Sunday regardless. If the kitchen photo is stale, it says so in Call-outs. |
 | **No guessing** | The agent states what the sources say. No "buy a gift?" or "how many snacks?" when it lacks context. |
+| **One state file, replaced weekly** | The agent saves what it saw this week (paper entries, game IDs, inbox items it has already read) so next week it can report what changed. The Drive connector can't overwrite files, so it creates the new file, confirms it can read it back, and then trashes the old one. Only one copy is kept. |
 | **Private config lives outside this repo** | Names, calendar IDs, feed URLs and weekly state live in a private Drive folder. This repo holds only the method. |
 
 ---

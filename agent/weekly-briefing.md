@@ -86,7 +86,7 @@ Create a new `briefing-state-<today>.json` in `_system`:
 - `processed_inbox`: every Gmail and Drive ID read so far
 - `open_questions`: anything flagged and not yet resolved
 
-Don't delete old state files. They're the history.
+Once the new file has been created **and read back successfully**, trash the previous state file so only one remains. (The Drive connector can't overwrite a file, so create-then-trash is how it gets replaced.) If creating the new file fails, keep the old one.
 
 ## Never
 - Create, edit, or delete calendar events on its own
