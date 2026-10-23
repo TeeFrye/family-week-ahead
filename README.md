@@ -4,34 +4,67 @@
 
 ---
 
-## The Problem
+## The Problem (v1, March 2026)
 
-Our family's schedule — three kids, sports practices, school events, birthday parties, dinner plans — are run on a physical calendar in the kitchen. It works better for her than me. The breakdown happens on my end: I can't see it unless I'm standing in front of it, which means I constantly feelbehind on what's coming, what needs coordinating, and where I can actually help.
+Our family's schedule — three kids, sports practices, school events, birthday parties, dinner plans — runs on a physical calendar in the kitchen. It works better for my wife than for me. The breakdown happens on my end: I can't see it unless I'm standing in front of it, so I constantly feel behind on what's coming, what needs coordinating, and where I can actually help.
 
 The goal isn't to change how she works. The goal is to bridge the gap between her analog system and my digital one — without adding anything to her plate.
 
 ---
 
-## What I Considered Building
+## What Changed: The Problem (v2, October 2026)
 
-Before writing a line of code, I mapped out the full solution space:
+I came back to this after Phase 1 and did what I should have done more of the first time: I interviewed my user (my wife), and then I looked at the actual data instead of my assumptions about it.
 
-| Option | What it is | Effort | Tradeoff |
-|---|---|---|---|
-| **Just use Claude.ai** | Upload photo → extract events → add to calendar manually | None | Manual each time, but works today |
-| **iOS Shortcut** | One-tap automation on my phone that calls Claude API + Google Calendar | Low–Medium | No code, lives on my phone, feels like a real tool |
-| **Web App (GitHub Pages)** | Full UI with photo upload, event review, Google Calendar push via OAuth | High | Overkill for the actual problem |
-| **Custom Claude Integration** | A prompt + Google Calendar MCP already connected in Claude.ai | None | Already possible without building anything |
+**What I learned:**
 
-**Decision:** Start with the simplest thing that works. Graduate to more complexity only if the friction justifies it.
+| Assumption (v1) | Reality (v2) |
+|---|---|
+| The gap is paper → digital | The gap is **5+ sources that never get cross-checked** |
+| It's my problem | **We both** miss things — spirit days, "bring money for X," schedule changes |
+| School info arrives by email | Almost none does. It lives in **ClassDojo push notifications** and **GroupMe** |
+| Sports schedules need to be read off the wall | The league publishes **iCal feeds** — structured data, no AI needed |
+| Sync events automatically | We want to **review before anything lands** on the shared calendar |
+| The output is a calendar | The output is a **weekly briefing** — the calendar is just one place it writes to |
+
+The paper calendar is still the source of truth. It's just not the only source.
+
+**v2 problem statement:** *Family schedule information arrives through many channels, each owned by a different person or app, and nobody reconciles them. Things fall through the cracks not because nobody wrote them down, but because nobody compared notes.*
 
 ---
 
-## Why This Repo Has No Code (Yet)
+## The v2 Solution: A Sunday-Morning Briefing Agent
 
-This is a decision log and experiment record, not a code project. That's intentional.
+A scheduled AI agent runs every Sunday morning, reads every source, reconciles them against our shared Google Family calendar, and emails a **Week Ahead** briefing. It **proposes**; we decide.
 
-One of the most important product skills is knowing when *not* to engineer something. A well-scoped solution to a real problem — even if it's just a repeatable prompt — is worth documenting publicly. This repo tracks the thinking, the iterations, and what actually worked.
+```
+ Kitchen calendar photo ─┐
+ League iCal feeds ──────┤
+ Family Inbox (Drive) ───┼──► Reconcile ──► Week Ahead email ──► ➕ one-tap add to Google Calendar
+ Family Inbox (Gmail) ───┤        ▲
+ Google Family calendar ─┘        │
+                          Last week's state (diffs: moved, crossed out, removed)
+```
+
+**The briefing has three parts:**
+1. **🔎 Call-outs** — overlaps, tight handoffs, likely-cancelled events, unclear abbreviations, stale inputs
+2. **📅 This week** — day by day; anything not yet in Google gets a ➕ link that opens a pre-filled event
+3. **👀 Next week** — heads-up on what's coming
+
+**The capture habit (the part that actually solves "we missed spirit day"):**
+ClassDojo and GroupMe have no usable integration path. Instead of fighting that, there's one rule: *if you see it, send it to the Family Inbox.* A share-sheet shortcut saves any screenshot to a Drive folder in one tap; copied text can be emailed to a `+family` Gmail address. The agent reads both every Sunday.
+
+### Design decisions
+
+| Decision | Why |
+|---|---|
+| **Propose, don't write** | A bad OCR read should never put junk on the calendar my wife relies on. One tap to accept keeps us in control. |
+| **Read feeds directly, don't subscribe** | Google refreshes subscribed feeds slowly and they only show for the subscriber. Reading them lets the agent detect *changes* via stable game IDs. |
+| **Universal capture inbox over per-app integrations** | One habit covers ClassDojo, GroupMe, flyers, and texts. Zero API work, zero ToS risk. |
+| **Images → Drive, text → Gmail** | Tested: the Gmail connector can't read attachments; Drive OCRs screenshots cleanly. |
+| **Photo is optional** | The briefing runs every Sunday regardless. If the kitchen photo is stale, it says so in Call-outs. |
+| **No guessing** | The agent states what the sources say. No "buy a gift?" or "how many snacks?" when it lacks context. |
+| **Private config lives outside this repo** | Names, calendar IDs, feed URLs and weekly state live in a private Drive folder. This repo holds only the method. |
 
 ---
 
@@ -39,95 +72,59 @@ One of the most important product skills is knowing when *not* to engineer somet
 
 ### ✅ Phase 1: Validate the AI extraction (Claude.ai — no code)
 
-**Goal:** Confirm that Claude can reliably read a photo of a handwritten kitchen calendar and extract structured events before investing any build time.
+**Goal:** Confirm that Claude can reliably read a photo of a handwritten kitchen calendar and extract structured events.
 
-**How:**
-1. Take a photo of the kitchen calendar
-2. Upload to Claude.ai
-3. Use the prompt below
-4. Review accuracy of extracted events
+**Results:**
+- Handwriting: **read reliably** — all 8–9 entries correct.
+- Multiple kids: **kept separate** correctly.
+- Ambiguity: **flagged "SB" (Spring Break)** rather than guessing; split a 3-item cell into 3 events.
 
-**Prompt v1:**
-```
-Here's a photo of our family's kitchen calendar. Please extract all events you can read and format them as a list like this:
+**Learnings that fed v2:** flag abbreviations, split multi-event cells, ask rather than guess, use structured output.
 
-- [Date] | [Day] | [Time if visible] | [Event] | [Who it's for]
+### ✅ Phase 2: Refine the prompt
+v2 extraction prompt in [`prompts/kitchen-calendar-extraction.md`](prompts/kitchen-calendar-extraction.md). Re-tested on two months of real calendar (Oct 2026): correctly read crossed-out entries as removed, matched differently-worded duplicates across sources (e.g. "X's Party" ↔ "Colts Game @ X's"), and surfaced an unknown abbreviation instead of inventing a meaning.
 
-If a date or time isn't clear, note that. If something is ambiguous, include your best read and flag it.
-```
+### ✅ Phase 3: Validate every input, by hand
+Before automating anything, each source was tested end to end in one session:
 
-**What I'm measuring:**
-- Can it read handwriting accurately? - **Yes, reliably. Got all 8–9 handwritten entries correctly.**
-- Does it handle multiple kids' events without mixing them up? - **Yes, kept Kid1 and Kid2 musical together, Kid1 field trip separate, friends birthday separate.**
-- How does it handle partial dates or unclear writing? - **Flagged "SB" (short-hand for Spring Break) correctly rather than guessing. April 17 had three items in one cell and extracted all three.**
+| Source | Method | Result |
+|---|---|---|
+| Kitchen calendar | Photo → vision extraction | ✅ |
+| League schedules | iCal feed | ✅ found 8 games missing from Google, including an overlap with a party |
+| School PDFs | Drive text extraction | ⚠️ text yes, embedded images no → screenshot those pages |
+| Dojo / flyer screenshots | Drive OCR | ✅ full flyer read cleanly |
+| Copied messages | Gmail `+family` label | ✅ |
+| Briefing email | Two test sends, iterated on format | ✅ (v1 buttons were invisible — Gmail strips CSS backgrounds) |
 
-**Status:** [ ] Not started | [ ] In progress | [x] Done  
-**Notes:** *(observations/thoughts that surfaced)*
-- Add instruction to flag abbreviations and to not always include them as-is
-- Add instruction to split multi-event cells into separate rows
-- Add insturction to ask questions, confirm start and end times, not to guess, etc
-- Possibly ask for output as JSON for the Shortcut phase
+### 🔄 Phase 4: Automate
+- [x] Agent instructions — [`agent/weekly-briefing.md`](agent/weekly-briefing.md)
+- [x] Private config + weekly state file (Drive)
+- [x] "Send to Family" iOS share-sheet shortcut — [`shortcuts/send-to-family.md`](shortcuts/send-to-family.md)
+- [ ] Scheduled Sunday-morning run
+- [ ] Two weeks of live runs → measure: items caught that we'd have missed
 
----
-
-### 🔄 Phase 2: Refine the prompt
-
-**Goal:** Improve extraction quality based on Phase 1 findings. Likely iterations:
-- Better handling of recurring events
-- Asking for output in a specific format for easier copy/paste
-- Testing with different calendar layouts or lighting conditions
-
-**Prompt iterations will be tracked in `/prompts/`**
-
----
-
-### 📱 Phase 3: Build the iOS Shortcut
-
-**Goal:** One tap on my phone → photo of calendar → events added to Google Family Calendar automatically.
-
-**How it works (high level):**
-1. Shortcut triggers → prompts me to select or take a photo
-2. Photo is sent to Claude API with the extraction prompt
-3. Claude returns structured event data (JSON)
-4. Shortcut parses the response and creates calendar events via the Google Calendar API or Apple Calendar
-
-**What I'll need to learn:**
-- How to call an external API from iOS Shortcuts (using the "Get Contents of URL" action)
-- How to pass an image as base64 to the Claude API
-- How to parse a JSON response inside Shortcuts
-- Whether to target Apple Calendar (easier) or Google Calendar (preferred)
-
-**Decision point:** Apple Calendar is significantly simpler to write to from Shortcuts (no OAuth required — it's a native action). Google Calendar requires API credentials. Will start with Apple Calendar and evaluate.
-
-**Resources to explore:**
-- [Anthropic API docs — vision/image input](https://docs.anthropic.com)
-- iOS Shortcuts "Get Contents of URL" action
-- Apple Calendar Shortcut actions
-
----
-
-### 🔮 Phase 4 (Optional): Web app
-
-Only worth building if:
-- The iOS Shortcut breaks down in some way
-- My wife wants to use it too (needs a browser UI)
-- I want the portfolio artifact specifically
-
-Likely stack if built: Single-file HTML + Claude API + Google Calendar OAuth. Same pattern as my other GitHub Pages projects.
+### 🔮 Later, only if friction justifies it
+- GameChanger feed for a second sport
+- GroupMe API (only if the capture habit isn't enough)
+- Two-way: let a reply to the briefing email apply changes
 
 ---
 
 ## What I'm Learning
 
-- How to scope a problem before picking a solution
-- Claude API image input (vision)
-- iOS Shortcuts as lightweight automation without code
-- When a prompt is the right tool and when code actually earns its complexity
+- **Discovery beats building.** The v1 plan was a well-built answer to the wrong question. Twenty minutes of questions and one look at real data reframed it.
+- **Validate inputs before automating.** Every source got a manual test before any scheduling. Two of them (Gmail attachments, PDF images) failed in ways that changed the design.
+- **The best integration is sometimes a habit.** A one-tap capture flow beat four app integrations.
+- **Keep humans in the loop where trust is fragile.** A shared family calendar is high-trust; proposals beat automation there.
+- **Ship the smallest thing that works, then iterate on real feedback.** The briefing format went through two rounds of edits from its actual reader.
 
 ---
 
-## Prompts
+## Repo Layout
 
-*Tracked in `/prompts/` as they evolve.*
-
----
+```
+agent/weekly-briefing.md                 # what the Sunday agent does, step by step
+agent/config.example.json                # shape of the private config (no real data)
+prompts/kitchen-calendar-extraction.md   # v2 photo-extraction prompt
+shortcuts/send-to-family.md              # iOS share-sheet shortcut setup
+```

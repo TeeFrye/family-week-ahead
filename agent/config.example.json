@@ -1,0 +1,31 @@
+{
+  "_note": "Shape of the private config. The real file lives in a private Drive folder, never in this repo.",
+  "timezone": "America/New_York",
+  "email": {
+    "to": ["owner@example.com"],
+    "cc": ["partner@example.com"],
+    "send": "Sunday morning"
+  },
+  "family_calendar_id": "xxxx@group.calendar.google.com",
+  "people": {
+    "owner": "Parent A",
+    "partner": {"name": "Parent B", "notes": "Only surface weekend/holiday shifts as all-day '<Name> Works'."},
+    "kids": [
+      {"name": "Kid 1", "grade": 5, "teachers": ["Teacher A"]},
+      {"name": "Kid 2", "grade": 3, "teachers": ["Teacher B"]},
+      {"name": "Kid 3", "grade": 1, "teachers": []}
+    ],
+    "shorthand": {"K1&K2": "Kid 1 & Kid 2"}
+  },
+  "school": {"name": "Example Elementary", "email_domain": "school.example.org"},
+  "sources": {
+    "team_feeds": [{"kid": "Kid 1", "url": "https://example.com/team.ics"}],
+    "drive_inbox_folder_id": "<folder id>",
+    "drive_system_folder_id": "<folder id>",
+    "gmail_query": "label:family-inbox newer_than:8d"
+  },
+  "rules": {
+    "event_title": "<Kid> <Short activity> <emoji>, e.g. 'Kid 1 Bball Game 🏀'",
+    "photo_stale_days": 14
+  }
+}
