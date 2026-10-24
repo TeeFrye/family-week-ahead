@@ -1,5 +1,7 @@
 # "Send to Family" — iOS Share Sheet Shortcut
 
+> **Status: parked.** Google Drive wouldn't load as a save location in the Files app. For now, upload screenshots and PDFs to the Family Inbox folder with the Google Drive app's upload button.
+
 Sends any screenshot, photo, or PDF to the **Family Inbox** Drive folder in one tap, from the share sheet in any app (ClassDojo, GroupMe, Photos, Messages, Safari).
 
 **Before you start:** the Google Drive app is installed and signed in, and a folder named `Family Inbox` exists in My Drive.
