@@ -101,7 +101,7 @@ Before automating anything, each source was tested end to end in one session:
 - [x] Agent instructions — [`agent/weekly-briefing.md`](agent/weekly-briefing.md)
 - [x] Private config + weekly state file (Drive)
 - [x] "Send to Family" iOS share-sheet shortcut — [`shortcuts/send-to-family.md`](shortcuts/send-to-family.md)
-- [ ] Scheduled Sunday-morning run
+- [x] Scheduled Sunday-morning run (cloud routine)
 - [ ] Two weeks of live runs → measure: items caught that we'd have missed
 
 ### 🔮 Later, only if friction justifies it
