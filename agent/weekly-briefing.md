@@ -33,6 +33,8 @@ For each item from paper, feeds, and inbox, find a matching Google event:
 - Same date, and the titles mean the same thing. Use judgment: "Sam's Party" matches "Football Game @ Sam's".
 - Feed games match by `feed-uid` in the event description.
 - Recurring practices count as matches for the paper's "K1&K2 practice"-style entries.
+- An event added from a past ➕ link has the exact proposed title on the same date. That's always a match.
+- Re-read Google right before writing the email. **Never put a ➕ on anything already on the calendar.**
 
 Then classify each item:
 | Result | What happens in the briefing |
