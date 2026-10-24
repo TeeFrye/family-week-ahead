@@ -38,7 +38,7 @@ Then classify each item:
 | Result | What happens in the briefing |
 |---|---|
 | Matched | Listed normally |
-| Missing from Google | Listed with a ➕ link |
+| Missing from Google | Listed with a ➕ link. This is the default for **every** dated item from any source, school items included (spirit days, tests, deadlines). Items with no specific date ("this week") get no link. |
 | Feed game moved or changed (time, place, or `LAST-MODIFIED` vs. state) | Call-out: "moved from X to Y" |
 | Feed game gone from feed but on Google | Call-out: "possibly cancelled" |
 | Paper entry now `removed`, or gone since last week | Call-out: "crossed out on paper but still on Google" |
